@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c75dbac9-3450-42c8-9df1-d1d94287d1fd" name="lsn_web_end" url="http://199.188.206.242">
+        <fileTransfer host="199.188.206.242" port="22" rootFolder="/home/lsn_monitor/lsn_monitor_env" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

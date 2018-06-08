@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """start run webmanage"""
 import sys
-sys.path.insert(0, "/root/lsn_env/env/")
+sys.path.insert(0, "/home/lsn_monitor/lsn_monitor_env/")
 import os
 from apps import create_app
 
