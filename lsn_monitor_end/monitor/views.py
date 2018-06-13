@@ -3,7 +3,7 @@ from flask import ( Blueprint, session, jsonify, request)
 from lsn_monitor_end.monitor.main import MonitorMain
 monitor = Blueprint('monitor', __name__)
 
-@monitor.route('/node_online', methods=['GET', 'POST'])
+@monitor.route('/monitor_info', methods=['GET', 'POST'])
 def monitor_info():
     """
     监控信息
@@ -11,13 +11,18 @@ def monitor_info():
     """
     data = dict()
     try:
-        import ast
-        parm =  ast.literal_eval(request.data) if request.method == 'POST' else  request.args
+        # import ast
+        # parm =  ast.literal_eval(request.data) if request.method == 'POST' else  request.args
         condition = dict()
+        parm = request.form.to_dict()
         condition["start_time"] = parm.get('start_time')
         condition["end_time"] = parm.get('end_time')
         data["node_online"] = MonitorMain.node_online(condition)
         data["node_new"] = MonitorMain.node_new()
+        data["connection_count"] = MonitorMain.connection_count(condition)
+        data["maximum_forwarding_series"] = MonitorMain.maximum_forwarding_series()
+        data["switched_wait_delay"] = MonitorMain.switched_wait_delay()
+        return jsonify({'code': 200, 'data': data, 'message': "success", 'token': ''})
     except Exception, e:
         return jsonify({'code': 500, 'status': 0, 'data': data, 'message': '服务器异常', 'token': ''})
     return jsonify({'code': 200, 'status': 1, 'data': data, 'message': 'success', 'token': ""})

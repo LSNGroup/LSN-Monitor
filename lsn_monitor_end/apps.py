@@ -4,6 +4,7 @@
 import logging
 
 from flask import Flask, g
+from flask_cors import *
 from lsn_monitor_end.db.db import DbClass
 
 class WingsAppHolder(object):
@@ -52,6 +53,7 @@ def init_app(settings=None, name=None):
     if name is None:
         name = __name__
     app = Flask(name)
+    CORS(app, supports_credentials=True)
     app.app_context().push()
     app.config.from_object(_s)
     return app

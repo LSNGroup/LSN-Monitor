@@ -34,7 +34,7 @@ class LoginMain(object):
                 result_info = {'status': 0, 'message':  u'密码不正确'}
                 return result_info
             else:
-                result_info = {'status': 1, 'message':  u'验证通过'}
+                result_info = {'status': 1, 'message':  u'登陆成功'}
                 return result_info
         except Exception, e:
             logging.error("login_check fail : {0}\n".format(e))
