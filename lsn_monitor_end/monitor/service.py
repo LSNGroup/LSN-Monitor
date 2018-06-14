@@ -4,7 +4,8 @@ from flask import g
 from sqlalchemy import and_, func
 # from lsn_monitor_end.db.lsn_db.StreamRecordTbl import StreamRecordTbl
 from lsn_monitor_end.db.lsn_db.StatusRecordTbl import StatusRecordTbl
-from datetime import datetime, date, timedelta, time
+from datetime import date, timedelta
+import time, datetime
 
 class MonitorService():
     """
@@ -17,12 +18,12 @@ class MonitorService():
         :return:
         """
         try:
-            start_time = conditions.get("start_time", datetime.strptime(str(date.today(), '%Y-%m-%d')))
-            end_time = conditions.get("end_time", time.time())
+            start_time = conditions.get("start_time")
+            end_time = conditions.get("end_time")
             total_online_device_num = g.mysql_db.query(StatusRecordTbl.total_online_device_num).\
                 filter(and_(StatusRecordTbl.record_time >= start_time,StatusRecordTbl.record_time < end_time)).first()
             # data["total_online_device_num"] = total_online_device_num
-            return total_online_device_num
+            return total_online_device_num[0] if total_online_device_num else 0
         except Exception, e:
             logging.error("login_check fail : {0}\n".format(e))
             return False
@@ -34,15 +35,17 @@ class MonitorService():
         :return:
         """
         try:
-            today = datetime.strptime(str(date.today(),'%Y-%m-%d'))
-            yesterday = today + timedelta(days=-1)
+            today = time.mktime(time.strptime(datetime.datetime.now().strftime('%Y-%m-%d'), "%Y-%m-%d"))- 28800
+            yesterday = today - 86400
             node_num_yesterday = g.mysql_db.query(StatusRecordTbl.total_online_device_num). \
                 filter(and_(StatusRecordTbl.record_time >= yesterday, StatusRecordTbl.record_time < today)).\
                 order_by("record_time desc").first()
             node_num_today = g.mysql_db.query(StatusRecordTbl.total_online_device_num). \
                 filter(StatusRecordTbl.record_time >= today).order_by("record_time desc").first()
-            # data["node_new"] = node_num_today - node_num_yesterday
-            return node_num_today - node_num_yesterday
+            node_num_y = node_num_yesterday[0] if node_num_yesterday else 0
+            node_num_t = node_num_today[0] if node_num_today else 0
+            node_new = node_num_t - node_num_y
+            return node_new
         except Exception, e:
             logging.error("login_check fail : {0}\n".format(e))
             return False
@@ -54,7 +57,7 @@ class MonitorService():
         :return:
         """
         try:
-            today = datetime.strptime(str(date.today(), '%Y-%m-%d'))
+            today = time.mktime(time.strptime(datetime.datetime.now().strftime('%Y-%m-%d'), "%Y-%m-%d"))
             # yesterday = today + timedelta(days=-1)
             # # node_num_yesterday = g.mysql_db.query(StatusRecordTbl.online_star_num). \
             # #     filter(and_(StatusRecordTbl.record_time >= yesterday, StatusRecordTbl.record_time < today)). \
@@ -62,7 +65,7 @@ class MonitorService():
             maximum_forwarding_series = g.mysql_db.query(StatusRecordTbl.total_online_device_num). \
                 filter(StatusRecordTbl.record_time >= today).order_by("record_time desc").first()
             # data["maximum_forwarding_series"] = maximum_forwarding_series
-            return maximum_forwarding_series
+            return maximum_forwarding_series[0] if maximum_forwarding_series else 0
         except Exception, e:
             logging.error("login_check fail : {0}\n".format(e))
             return False
@@ -75,8 +78,8 @@ class MonitorService():
         """
         try:
             data = dict()
-            start_time = conditions.get("start_time", datetime.strptime(str(date.today(), '%Y-%m-%d')))
-            end_time = conditions.get("end_time", time.time())
+            start_time = conditions.get("start_time")
+            end_time = conditions.get("end_time")
             connection_count_num = g.mysql_db.query(StatusRecordTbl.total_online_device_num). \
                 filter(and_(StatusRecordTbl.record_time >= start_time, StatusRecordTbl.record_time < end_time)).\
                 order_by("record_time desc").first()
@@ -92,7 +95,7 @@ class MonitorService():
             data["connection_count_avg"] = connection_count_avg
             data["connection_count_max"] = connection_count_max
             data["connection_count_min"] = connection_count_min
-            return data
+            return connection_count_num[0] if connection_count_num else 0
         except Exception, e:
             logging.error("login_check fail : {0}\n".format(e))
             return False

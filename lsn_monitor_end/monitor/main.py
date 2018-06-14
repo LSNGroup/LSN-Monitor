@@ -66,7 +66,7 @@ class MonitorMain(object):
         切换等待时延 节点300ms无响应，则应切换线路。后续可调整为 200ms。
         """
         try:
-            data = MonitorService.maximum_forwarding_series(condition)
+            data = MonitorService.switched_wait_delay(condition)
             return data
         except Exception, e:
             logging.error("get node_online fail : {0}\n".format(e))

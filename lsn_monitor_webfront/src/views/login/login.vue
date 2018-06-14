@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="login-wrap" v-show="showLogin">
-            <h3>LSN监控系统</h3>
+            <h3>登陆</h3>
             <p v-show="showTishi">{{tishi}}</p>
             <input type="text" placeholder="请输入用户名" v-model="username"/>
             <input type="password" placeholder="请输入密码" v-model="password"/>
@@ -54,18 +54,20 @@
                     .then((res)=>{
                         var data = res.data
                         if(data.status == 1){
-                            this.tishi = data.message
+                            alert(data.message)
+                            this.tishi = res.message
                             this.showTishi = true
                             setCookie("username",this.username,1000*60)
                             setTimeout(function(){
-                                this.$router.push("/home")
-                            }.bind(this),500)
+                                this.$router.push("/main")
+                            }.bind(this),100)
                         }else{
-                            this.tishi = data.message
+                            alert(data.message)
+                            this.tishi = res.message
                             this.showTishi = true
                             setTimeout(function(){
                                 this.$router.push("/")
-                            }.bind(this),500)
+                            }.bind(this),100)
                         }
                     })
                 }
